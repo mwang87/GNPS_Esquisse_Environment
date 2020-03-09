@@ -1,8 +1,10 @@
 ## Installation
 
-1. Conda
-1. R
-1. esquisse
+1. Conda Install
+1. Install R environment - conda create -n r_env r-essentials r-base
+1. conda activate r_env
+1. conda install -c conda-forge r-esquisse
+
 
 
 ## Running
