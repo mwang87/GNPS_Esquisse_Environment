@@ -2,6 +2,7 @@ library(shiny)
 library(data.table)
 library(esquisse)
 options(shiny.port = 8347)
+options(shiny.host = "0.0.0.0")
 args = commandArgs(trailingOnly=TRUE)
 
 ui <- fluidPage(
@@ -10,12 +11,6 @@ ui <- fluidPage(
   
   sidebarLayout(
     sidebarPanel(
-    #   radioButtons(
-    #     inputId = "data", 
-    #     label = "Data to use:", 
-    #     choices = c("iris", "mtcars"),
-    #     inline = TRUE
-    #   )
         textInput(inputId="gnpstask", "Import GNPS Task", value = "67357355dae54e7ebf07a8986f07a7f6", width = NULL, placeholder = NULL),
         textInput(inputId="featureselection", "Feature Number", value = "1,2", width = NULL, placeholder = NULL)
     ),
