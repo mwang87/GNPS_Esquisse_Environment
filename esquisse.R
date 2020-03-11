@@ -11,12 +11,12 @@ loadfonts()
 
 ui <- fluidPage(
   
-  titlePanel("Use esquisse as a Shiny module"),
+  titlePanel("GNPS Esquisse Data Exploration Interface"),
   
   sidebarLayout(
     sidebarPanel(
-        textInput(inputId="gnpstask", "Import GNPS Task", value = "67357355dae54e7ebf07a8986f07a7f6", width = NULL, placeholder = NULL),
-        textInput(inputId="featureselection", "Feature Number", value = "1,2", width = NULL, placeholder = NULL)
+        textInput(inputId="gnpstask", "Import GNPS Task ID", value = "67357355dae54e7ebf07a8986f07a7f6", width = NULL, placeholder = NULL),
+        textInput(inputId="featureselection", "Feature Number in GNPS (multiple separated by comma)", value = "1,2", width = NULL, placeholder = NULL)
     ),
     mainPanel(
       tabsetPanel(
