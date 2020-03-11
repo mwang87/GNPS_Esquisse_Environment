@@ -1,9 +1,13 @@
 library(shiny)
 library(data.table)
+library(extrafont)
 library(esquisse)
 options(shiny.port = 8347)
 options(shiny.host = "0.0.0.0")
 args = commandArgs(trailingOnly=TRUE)
+
+font_import()
+loadfonts()
 
 ui <- fluidPage(
   
@@ -33,7 +37,18 @@ ui <- fluidPage(
   )
 )
 
-server <- function(input, output, session) {  
+server <- function(input, output, session) {
+  observe({
+    query <- parseQueryString(session$clientData$url_search)
+    if (!is.null(query[['task']])) {
+      updateTextInput(session, "gnpstask", value=query[['task']])
+    }
+
+    if (!is.null(query[['feature']])) {
+      updateTextInput(session, "featureselection", value=query[['feature']])
+    }
+  })
+
   data <- reactiveValues(data = fread('https://gnps.ucsd.edu/ProteoSAFe/DownloadResultFile?task=67357355dae54e7ebf07a8986f07a7f6&file=feature_statistics/data_long.csv'), name = "gnps")
   fulldt <- fread('https://gnps.ucsd.edu/ProteoSAFe/DownloadResultFile?task=67357355dae54e7ebf07a8986f07a7f6&file=feature_statistics/data_long.csv')
 
