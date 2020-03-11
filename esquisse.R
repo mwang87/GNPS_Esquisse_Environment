@@ -50,20 +50,19 @@ server <- function(input, output, session) {
   })
 
   #TODO: refactor this portion of the code because, we don't fully understand global
-  data <- reactiveValues(data=fread('https://gnps.ucsd.edu/ProteoSAFe/DownloadResultFile?task=67357355dae54e7ebf07a8986f07a7f6&file=feature_statistics/data_long.csv'), name = "gnps")
-  fulldt <- fread('https://gnps.ucsd.edu/ProteoSAFe/DownloadResultFile?task=67357355dae54e7ebf07a8986f07a7f6&file=feature_statistics/data_long.csv')
+  data <- reactiveValues(data=fread('https://gnps.ucsd.edu/ProteoSAFe/DownloadResultFile?task=67357355dae54e7ebf07a8986f07a7f6&file=feature_statistics/data_long.csv'), fulldt=fread('https://gnps.ucsd.edu/ProteoSAFe/DownloadResultFile?task=67357355dae54e7ebf07a8986f07a7f6&file=feature_statistics/data_long.csv'), name = "gnps")
 
   observeEvent(input$gnpstask, {
-    fulldt <- fread(sprintf("https://gnps.ucsd.edu/ProteoSAFe/DownloadResultFile?task=%s&file=feature_statistics/data_long.csv", input$gnpstask))
+    data$fulldt <- fread(sprintf("https://gnps.ucsd.edu/ProteoSAFe/DownloadResultFile?task=%s&file=feature_statistics/data_long.csv", input$gnpstask))
     featurelist <- strsplit(input$featureselection, ",")[[1]]
     featurelist <- as.integer(featurelist)
-    data$data <- fulldt[variable %in% featurelist]
+    data$data <- data$fulldt[variable %in% featurelist]
   })
 
   observeEvent(input$featureselection, {
     featurelist <- strsplit(input$featureselection, ",")[[1]]
     featurelist <- as.integer(featurelist)
-    data$data <- fulldt[variable %in% featurelist]
+    data$data <- data$fulldt[variable %in% featurelist]
   })
   
   result <- callModule(
