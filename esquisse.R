@@ -58,7 +58,7 @@ server <- function(input, output, session) {
       data$fulldt <- fread(sprintf("https://gnps.ucsd.edu/ProteoSAFe/DownloadResultFile?task=%s&file=feature_statistics/data_long.csv", input$gnpstask))
       featurelist <- strsplit(input$featureselection, ",")[[1]]
       featurelist <- as.integer(featurelist)
-      data$data <- data$fulldt[variable %in% featurelist]
+      data$data <- data$fulldt[featureid %in% featurelist]
     }
   })
 
@@ -66,7 +66,7 @@ server <- function(input, output, session) {
     data$data = tryCatch({
       featurelist <- strsplit(input$featureselection, ",")[[1]]
       featurelist <- as.integer(featurelist)
-      filtereddf <- data$fulldt[variable %in% featurelist]
+      filtereddf <- data$fulldt[featureid %in% featurelist]
     }, warning = function(w) {
       print("warning")
       return(data.frame())
