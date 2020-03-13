@@ -15,7 +15,8 @@ ui <- fluidPage(
   
   sidebarLayout(
     sidebarPanel(
-        textInput(inputId="gnpstask", "Import GNPS Task ID", value = "67357355dae54e7ebf07a8986f07a7f6", width = NULL, placeholder = NULL),
+        #textInput(inputId="gnpstask", "Import GNPS Task ID", value = "67357355dae54e7ebf07a8986f07a7f6", width = NULL, placeholder = NULL),
+        textInput(inputId="gnpstask", "Import GNPS Task ID", value = "", width = NULL, placeholder = NULL),
         textInput(inputId="featureselection", "Feature Number in GNPS (multiple separated by comma)", value = "1,2", width = NULL, placeholder = NULL)
     ),
     mainPanel(
@@ -50,19 +51,33 @@ server <- function(input, output, session) {
   })
 
   #TODO: refactor this portion of the code because, we don't fully understand global
-  data <- reactiveValues(data=fread('https://gnps.ucsd.edu/ProteoSAFe/DownloadResultFile?task=67357355dae54e7ebf07a8986f07a7f6&file=feature_statistics/data_long.csv'), fulldt=fread('https://gnps.ucsd.edu/ProteoSAFe/DownloadResultFile?task=67357355dae54e7ebf07a8986f07a7f6&file=feature_statistics/data_long.csv'), name = "gnps")
+  #data <- reactiveValues(data=fread('https://gnps.ucsd.edu/ProteoSAFe/DownloadResultFile?task=67357355dae54e7ebf07a8986f07a7f6&file=feature_statistics/data_long.csv'), fulldt=fread('https://gnps.ucsd.edu/ProteoSAFe/DownloadResultFile?task=67357355dae54e7ebf07a8986f07a7f6&file=feature_statistics/data_long.csv'), name = "gnps")
+
+  data <- reactiveValues(data=data.frame(), fulldt=data.frame(), name = "gnps")
 
   observeEvent(input$gnpstask, {
-    data$fulldt <- fread(sprintf("https://gnps.ucsd.edu/ProteoSAFe/DownloadResultFile?task=%s&file=feature_statistics/data_long.csv", input$gnpstask))
-    featurelist <- strsplit(input$featureselection, ",")[[1]]
-    featurelist <- as.integer(featurelist)
-    data$data <- data$fulldt[variable %in% featurelist]
+    if (nchar(input$gnpstask) > 2){
+      data$fulldt <- fread(sprintf("https://gnps.ucsd.edu/ProteoSAFe/DownloadResultFile?task=%s&file=feature_statistics/data_long.csv", input$gnpstask))
+      featurelist <- strsplit(input$featureselection, ",")[[1]]
+      featurelist <- as.integer(featurelist)
+      data$data <- data$fulldt[variable %in% featurelist]
+    }
   })
 
   observeEvent(input$featureselection, {
-    featurelist <- strsplit(input$featureselection, ",")[[1]]
-    featurelist <- as.integer(featurelist)
-    data$data <- data$fulldt[variable %in% featurelist]
+    data$data = tryCatch({
+      featurelist <- strsplit(input$featureselection, ",")[[1]]
+      featurelist <- as.integer(featurelist)
+      filtereddf <- data$fulldt[variable %in% featurelist]
+    }, warning = function(w) {
+      print("warning")
+      return(data.frame())
+    }, error = function(e) {
+      print("error")
+      return(data.frame())
+    }, finally = {
+      print("FINALLY")
+    })
   })
   
   result <- callModule(
