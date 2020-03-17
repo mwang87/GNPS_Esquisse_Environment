@@ -1,0 +1,15 @@
+version: '3'
+services:
+  upload-esquissse-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: upload-esquisse-web
+    ports:
+    - "8348:8348"
+    networks:
+      - default
+    volumes:
+       - ./uploads:/uploads
+    restart: on-failure
+    command: /app/run_server.sh
