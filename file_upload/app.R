@@ -2,8 +2,6 @@ library(shiny)
 library(data.table)
 library(extrafont)
 library(esquisse)
-options(shiny.port = 8348)
-options(shiny.host = "0.0.0.0")
 options(shiny.maxRequestSize=500*1024^2)
 args = commandArgs(trailingOnly=TRUE)
 
