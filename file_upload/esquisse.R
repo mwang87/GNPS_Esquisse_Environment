@@ -53,21 +53,6 @@ server <- function(input, output, session) {
     }
   })
 
-  # observeEvent(input$featureselection, {
-  #   data$data = tryCatch({
-  #     featurelist <- strsplit(input$featureselection, ",")[[1]]
-  #     featurelist <- as.integer(featurelist)
-  #     filtereddf <- data$fulldt[featureid %in% featurelist]
-  #   }, warning = function(w) {
-  #     print("warning")
-  #     return(data.frame())
-  #   }, error = function(e) {
-  #     print("error")
-  #     return(data.frame())
-  #   }, finally = {
-  #     print("FINALLY")
-  #   })
-  # })
   
   result <- callModule(
     module = esquisserServer,
