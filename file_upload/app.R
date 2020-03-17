@@ -2,6 +2,7 @@ library(shiny)
 library(data.table)
 library(extrafont)
 library(esquisse)
+library(rio)
 options(shiny.maxRequestSize=500*1024^2)
 args = commandArgs(trailingOnly=TRUE)
 
