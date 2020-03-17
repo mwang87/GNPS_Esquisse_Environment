@@ -16,8 +16,9 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
         #textInput(inputId="gnpstask", "Import GNPS Task ID", value = "67357355dae54e7ebf07a8986f07a7f6", width = NULL, placeholder = NULL),
+        #textInput(inputId="featureselection", "Feature Number in GNPS (multiple separated by comma)", value = "1,2", width = NULL, placeholder = NULL)
         textInput(inputId="gnpstask", "Import GNPS Task ID", value = "", width = NULL, placeholder = NULL),
-        textInput(inputId="featureselection", "Feature Number in GNPS (multiple separated by comma)", value = "1,2", width = NULL, placeholder = NULL)
+        textInput(inputId="featureselection", "Feature Number in GNPS (multiple separated by comma)", value = "", width = NULL, placeholder = NULL)
     ),
     mainPanel(
       tabsetPanel(
@@ -54,28 +55,51 @@ server <- function(input, output, session) {
   data <- reactiveValues(data=data.frame(), fulldt=data.frame(), name = "gnps")
 
   observeEvent(input$gnpstask, {
-    if (nchar(input$gnpstask) > 2){
+    print("Observing GNPS Task")
+    if (nchar(input$gnpstask) == 32){
       data$fulldt <- fread(sprintf("https://gnps.ucsd.edu/ProteoSAFe/DownloadResultFile?task=%s&file=feature_statistics/data_long.csv", input$gnpstask))
-      featurelist <- strsplit(input$featureselection, ",")[[1]]
-      featurelist <- as.integer(featurelist)
-      data$data <- data$fulldt[featureid %in% featurelist]
+      if (nchar(input$featureselection) > 0){
+        data$data = tryCatch({
+          featurelist <- strsplit(input$featureselection, ",")[[1]]
+          featurelist <- as.integer(featurelist)
+          filtereddf <- data$fulldt[featureid %in% featurelist]
+        }, warning = function(w) {
+          print("warning")
+          return(data.frame())
+        }, error = function(e) {
+          print("error")
+          return(data.frame())
+        }, finally = {
+          print("FINALLY")
+        })
+      }
+      else{
+        data$data = data$fulldt
+      }
     }
+    print("END")
   })
 
   observeEvent(input$featureselection, {
-    data$data = tryCatch({
-      featurelist <- strsplit(input$featureselection, ",")[[1]]
-      featurelist <- as.integer(featurelist)
-      filtereddf <- data$fulldt[featureid %in% featurelist]
-    }, warning = function(w) {
-      print("warning")
-      return(data.frame())
-    }, error = function(e) {
-      print("error")
-      return(data.frame())
-    }, finally = {
-      print("FINALLY")
-    })
+    print("Observing Feature Selection")
+    if (nchar(input$featureselection) > 0){
+      data$data = tryCatch({
+        featurelist <- strsplit(input$featureselection, ",")[[1]]
+        featurelist <- as.integer(featurelist)
+        filtereddf <- data$fulldt[featureid %in% featurelist]
+      }, warning = function(w) {
+        print("warning")
+        return(data.frame())
+      }, error = function(e) {
+        print("error")
+        return(data.frame())
+      }, finally = {
+        print("FINALLY")
+      })
+    }
+    else{
+      data$data = data$fulldt
+    }
   })
   
   result <- callModule(
