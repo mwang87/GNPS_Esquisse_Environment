@@ -11,11 +11,18 @@ font_import()
 loadfonts()
 
 ### Whole Shiny app ###
-ui <- fluidPage(
+ui <- navbarPage(
+  title = "GNPS",
+  tabPanel(
+    title = "Equisse Standalone Plotter",
     esquisserUI(
-        id = "esquisse", 
-        container = esquisseContainer(fixed = TRUE)
+      id = "esquisse", 
+      header = FALSE,
+      container = esquisseContainer(
+        fixed = c(50, 0, 0, 0)
+      )
     )
+  )
 )
 
 server <- function(input, output, session) {
