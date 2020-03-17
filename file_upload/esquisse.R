@@ -4,6 +4,7 @@ library(extrafont)
 library(esquisse)
 options(shiny.port = 8348)
 options(shiny.host = "0.0.0.0")
+options(shiny.maxRequestSize=500*1024^2)
 args = commandArgs(trailingOnly=TRUE)
 
 font_import()
@@ -15,7 +16,13 @@ ui <- fluidPage(
   
   sidebarLayout(
     sidebarPanel(
-        textInput(inputId="uploadfile", "File Name (Do not touch)", value = "", width = NULL, placeholder = NULL)
+        #textInput(inputId="uploadfile", "File Name (Do not touch)", value = "", width = NULL, placeholder = NULL),
+        # Input: Select a file ----
+        fileInput(inputId="file1", "Choose CSV File",
+                  multiple = FALSE,
+                  accept = c("text/csv",
+                          "text/comma-separated-values,text/plain",
+                          ".csv"))
     ),
     mainPanel(
       tabsetPanel(
@@ -37,20 +44,26 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-  observe({
-    query <- parseQueryString(session$clientData$url_search)
-    if (!is.null(query[['filename']])) {
-      updateTextInput(session, "uploadfile", value=query[['filename']])
-    }
-  })
+
+  # observe({
+  #   query <- parseQueryString(session$clientData$url_search)
+  #   if (!is.null(query[['filename']])) {
+  #     updateTextInput(session, "uploadfile", value=query[['filename']])
+  #   }
+  # })
 
   #TODO: refactor this portion of the code because, we don't fully understand global
   data <- reactiveValues(data=data.frame(), name="upload")
 
-  observeEvent(input$uploadfile, {
-    if (nchar(input$uploadfile) > 2){
-      data$data <- fread(sprintf("/uploads/%s", basename(input$uploadfile)))
-    }
+  # observeEvent(input$uploadfile, {
+  #   if (nchar(input$uploadfile) > 2){
+  #     data$data <- fread(sprintf("/uploads/%s", basename(input$uploadfile)))
+  #   }
+  # })
+
+  observeEvent(input$file1, {
+    print(input$file1)
+    data$data = read.csv(file=input$file1$datapath)
   })
 
   

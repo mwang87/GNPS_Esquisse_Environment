@@ -12,4 +12,4 @@ services:
     volumes:
        - ./uploads:/uploads
     restart: on-failure
-    command: /app/run_server.sh
+    command: /app/run_esquisse_server.sh
