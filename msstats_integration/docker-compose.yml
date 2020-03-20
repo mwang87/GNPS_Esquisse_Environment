@@ -1,0 +1,13 @@
+version: '3'
+services:
+  msstats-esquissse-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: msstats-esquisse-web
+    ports:
+    - "8349:8349"
+    networks:
+      - default
+    restart: on-failure
+    command: /app/run_server.sh
