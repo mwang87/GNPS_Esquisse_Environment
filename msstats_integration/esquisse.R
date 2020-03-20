@@ -60,7 +60,7 @@ server <- function(input, output, session) {
         data$data = tryCatch({
           featurelist <- strsplit(input$featureselection, ",")[[1]]
           featurelist <- as.integer(featurelist)
-          filtereddf <- data$fulldt[PEPTIDE %in% featurelist]
+          filtereddf <- data$fulldt[PROTEIN %in% featurelist]
         }, warning = function(w) {
           print("warning")
           return(data.frame())
@@ -84,7 +84,7 @@ server <- function(input, output, session) {
       data$data = tryCatch({
         featurelist <- strsplit(input$featureselection, ",")[[1]]
         featurelist <- as.integer(featurelist)
-        filtereddf <- data$fulldt[PEPTIDE %in% featurelist]
+        filtereddf <- data$fulldt[PROTEIN %in% featurelist]
       }, warning = function(w) {
         print("warning")
         return(data.frame())
