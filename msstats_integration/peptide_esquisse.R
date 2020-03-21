@@ -16,7 +16,7 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
         textInput(inputId="gnpstask", "Import MSStats Task ID", value = "", width = NULL, placeholder = NULL),
-        textInput(inputId="featureselection", "Peptide in GNPS (multiple separated by comma)", value = "", width = NULL, placeholder = NULL)
+        textInput(inputId="featureselection", "Protein in MSStats (multiple separated by comma)", value = "", width = NULL, placeholder = NULL)
     ),
     mainPanel(
       tabsetPanel(
@@ -53,13 +53,11 @@ server <- function(input, output, session) {
   data <- reactiveValues(data=data.frame(), fulldt=data.frame(), name = "gnps")
 
   observeEvent(input$gnpstask, {
-    print("Observing GNPS Task")
     if (nchar(input$gnpstask) == 32){
-      data$fulldt <- fread(sprintf("https://proteomics2.ucsd.edu/ProteoSAFe/DownloadResultFile?task=%s&file=processed_data/", input$gnpstask))
+      data$fulldt <- fread(sprintf("https://proteomics2.ucsd.edu/ProteoSAFe/DownloadResultFile?task=%s&file=processed_data/peptides.tsv", input$gnpstask))
       if (nchar(input$featureselection) > 0){
         data$data = tryCatch({
           featurelist <- strsplit(input$featureselection, ",")[[1]]
-          featurelist <- as.integer(featurelist)
           filtereddf <- data$fulldt[PROTEIN %in% featurelist]
         }, warning = function(w) {
           print("warning")
@@ -83,7 +81,6 @@ server <- function(input, output, session) {
     if (nchar(input$featureselection) > 0){
       data$data = tryCatch({
         featurelist <- strsplit(input$featureselection, ",")[[1]]
-        featurelist <- as.integer(featurelist)
         filtereddf <- data$fulldt[PROTEIN %in% featurelist]
       }, warning = function(w) {
         print("warning")

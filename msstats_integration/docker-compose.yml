@@ -1,13 +1,25 @@
 version: '3'
 services:
-  msstats-esquissse-web:
+  msstats-peptide-esquissse-web:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: msstats-esquisse-web
+    container_name: msstats-peptide-esquisse-web
     ports:
     - "8349:8349"
     networks:
       - default
     restart: on-failure
-    command: /app/run_server.sh
+    command: /app/run_peptide_server.sh
+
+  msstats-protein-esquissse-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: msstats-protein-esquisse-web
+    ports:
+    - "8350:8350"
+    networks:
+      - default
+    restart: on-failure
+    command: /app/run_protein_server.sh
