@@ -1,0 +1,15 @@
+version: '3'
+services:
+  text-esquissse-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: text-esquisse-web
+    ports:
+    - "8351:8351"
+    networks:
+      - default
+    volumes:
+       - ./uploads:/uploads
+    restart: on-failure
+    command: /app/run_esquisse_server.sh
