@@ -1,0 +1,13 @@
+version: '3'
+services:
+  gnps-esquissse-results-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gnps-esquisse-results-web
+    ports:
+    - "8359:8359"
+    networks:
+      - default
+    restart: on-failure
+    command: /app/run_server.sh
