@@ -62,48 +62,54 @@ server <- function(input, output, session) {
     if (task_length == 32 && view_length > 0){
       url <- sprintf("https://gnps.ucsd.edu/ProteoSAFe/result_json.jsp?task=%s&view=%s", input$gnpstask, input$view)
       print(url)
-      result_json <- fromJSON(url)["blockData"]
-      result_table <- as.data.frame(result_json)
-      result_table <- type_convert(result_table)
-      data$data <- result_table
+      
 
-      # data$data = tryCatch({
+      data$data = tryCatch({
 
+        result_json <- fromJSON(url)["blockData"]
+        result_table <- as.data.frame(result_json)
+        result_table <- type_convert(result_table)
         
-        
-      # }, warning = function(w) {
-      #   print("warning")
-      #   return(data.frame())
-      # }, error = function(e) {
-      #   print("ERROR")
-      #   return(data.frame())
-      # }, finally = {
-      #   print("FINALLY")
-      # })
+      }, warning = function(w) {
+        print("warning")
+        return(data.frame())
+      }, error = function(e) {
+        print("ERROR")
+        return(data.frame())
+      }, finally = {
+        print("FINALLY")
+      })
     }
     print("END")
   })
 
   observeEvent(input$featureselection, {
-    print("Observing Feature Selection")
-    # if (nchar(input$featureselection) > 0){
-    #   data$data = tryCatch({
-    #     featurelist <- strsplit(input$featureselection, ",")[[1]]
-    #     featurelist <- as.integer(featurelist)
-    #     filtereddf <- data$fulldt[featureid %in% featurelist]
-    #   }, warning = function(w) {
-    #     print("warning")
-    #     return(data.frame())
-    #   }, error = function(e) {
-    #     print("error")
-    #     return(data.frame())
-    #   }, finally = {
-    #     print("FINALLY")
-    #   })
-    # }
-    # else{
-    #   data$data = data$fulldt
-    # }
+    print("Observing GNPS Task")
+    task_length = nchar(input$gnpstask)
+    view_length = nchar(input$view)
+
+    if (task_length == 32 && view_length > 0){
+      url <- sprintf("https://gnps.ucsd.edu/ProteoSAFe/result_json.jsp?task=%s&view=%s", input$gnpstask, input$view)
+      print(url)
+      
+
+      data$data = tryCatch({
+
+        result_json <- fromJSON(url)["blockData"]
+        result_table <- as.data.frame(result_json)
+        result_table <- type_convert(result_table)
+        
+      }, warning = function(w) {
+        print("warning")
+        return(data.frame())
+      }, error = function(e) {
+        print("ERROR")
+        return(data.frame())
+      }, finally = {
+        print("FINALLY")
+      })
+    }
+    print("END")
   })
   
   result <- callModule(
