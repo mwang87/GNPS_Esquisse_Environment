@@ -57,11 +57,14 @@ server <- function(input, output, session) {
   observeEvent(input$gnpstask, {
     print("Observing GNPS Task")
     if (nchar(input$gnpstask) == 32){
-      data$fulldt <- fread(sprintf("https://gnps.ucsd.edu/ProteoSAFe/DownloadResultFile?task=%s&file=feature_statistics/data_long.csv", input$gnpstask))
+      fulldt <- fread(sprintf("https://gnps.ucsd.edu/ProteoSAFe/DownloadResultFile?task=%s&file=feature_statistics/data_long.csv", input$gnpstask))
+      fulldt$featureid <- as.character(fulldt$featureid)
+      data$fulldt <- fulldt
+      
       if (nchar(input$featureselection) > 0){
         data$data = tryCatch({
           featurelist <- strsplit(input$featureselection, ",")[[1]]
-          featurelist <- as.integer(featurelist)
+          featurelist <- as.character(featurelist)
           filtereddf <- data$fulldt[featureid %in% featurelist]
         }, warning = function(w) {
           print("warning")
@@ -85,7 +88,7 @@ server <- function(input, output, session) {
     if (nchar(input$featureselection) > 0){
       data$data = tryCatch({
         featurelist <- strsplit(input$featureselection, ",")[[1]]
-        featurelist <- as.integer(featurelist)
+        featurelist <- as.character(featurelist)
         filtereddf <- data$fulldt[featureid %in% featurelist]
       }, warning = function(w) {
         print("warning")
